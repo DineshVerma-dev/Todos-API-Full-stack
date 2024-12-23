@@ -9,18 +9,61 @@ import { jwtauthMiddleware, generatetoken } from './middlewares/jwtAuthMiddlewar
 dotenv.config({
     path: "./.env"
 })
-
 const app = express();
 app.use(express.json())
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}))
+
+
 
 const PORT = process.env.PORT;
 connectDB();
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true
-}))
 
+
+app.get("/", async (req, res) => {
+    const data = [
+        {
+            "id": 1,
+            "title": "Complete project documentation",
+            "description": "Finish writing the API documentation for the project.",
+            "status": "in-progress",
+            "dueDate": "2024-12-25"
+        },
+        {
+            "id": 2,
+            "title": "Prepare presentation",
+            "description": "Create slides for the upcoming team meeting.",
+            "status": "not-started",
+            "dueDate": "2024-12-27"
+        },
+        {
+            "id": 3,
+            "title": "Update resume",
+            "description": "Add recent projects and certifications to the resume.",
+            "status": "completed",
+            "dueDate": "2024-12-20"
+        },
+        {
+            "id": 4,
+            "title": "Grocery shopping",
+            "description": "Buy vegetables, fruits, and snacks for the week.",
+            "status": "not-started",
+            "dueDate": "2024-12-24"
+        },
+        {
+            "id": 5,
+            "title": "Schedule dentist appointment",
+            "description": "Call the dentist and book an appointment for a routine checkup.",
+            "status": "in-progress",
+            "dueDate": "2024-12-30"
+        }
+    ];
+    res.status(200).json(data );
+});
 app.post("/signup", async (req, res) => {
     try {
         const signupSchema = z.object({
@@ -95,7 +138,7 @@ app.post("/signin", async (req, res) => {
     }
 });
 
-app.get("/todos", jwtauthMiddleware, async (req, res) => {
+app.get("/todos", async (req, res) => {
     const get_todos = await TodoModel.find();
     console.log(get_todos);
 
